@@ -147,8 +147,10 @@ static int log_notify(struct blob_attr *msg)
 		strncat(buf, m, sizeof(buf));
 		if (log_udp)
 			err = write(sender.fd, buf, strlen(buf));
-		else
+		else {
+			strncat(buf, "\n", sizeof(buf));
 			err = send(sender.fd, buf, strlen(buf), 0);
+		}
 
 		if (err < 0) {
 			syslog(0, "failed to send log data to %s:%s via %s\n",
@@ -186,6 +188,8 @@ static int usage(const char *prog)
 		"    -P	<prefix>	Prefix custom text to streamed messages\n"
 		"    -f			Follow log messages\n"
 		"    -u			Use UDP as the protocol\n"
+		"\n"
+		"(patched version)\n"
 		"\n", prog);
 	return 1;
 }
